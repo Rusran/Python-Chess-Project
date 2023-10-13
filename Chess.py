@@ -1,6 +1,6 @@
 import chess
 
-print("Horse")
+print("pussy")
 print("Balls")
 print("Nuts")
 
