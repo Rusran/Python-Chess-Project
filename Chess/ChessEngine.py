@@ -18,5 +18,5 @@ class GameState():
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
         ]
 
-        self.whiteToMove = True
-        self.moveLog = []
+        self.white_To_Move = True
+        self.move_Log = []
