@@ -17,6 +17,7 @@ class GameState():
             ["wp", "wp", "wp", "wp", "wp", "wp", "wp", "wp"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
         ]
+        
 
         self.white_To_Move = True
         self.move_Log = []
