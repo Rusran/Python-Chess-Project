@@ -36,6 +36,7 @@ def main():
     screen.fill(p.Color("White"))
     gs = ChessEngine.GameState()
     load_Images()
+    p.display.set_caption('Chesser')
     running = True
 
     while running:
