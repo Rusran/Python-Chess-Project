@@ -15,6 +15,8 @@ IMAGES = {}
 Making global dictionary of images that will be called once
 """
 def load_Images():
+    icon= p.image.load('img/logo.png') 
+    p.display.set_icon(icon)
     pieces = ['wp', 'bp', 'wR', 'bR', 'wN', 'bN', 'wB', 'bB', 'wQ', 'bQ', 'wK', 'bK']
     for piece in pieces:
         IMAGES[piece] = p.transform.scale(p.image.load("img/" + piece + ".png"), (SQUARE, SQUARE))
