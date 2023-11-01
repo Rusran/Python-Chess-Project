@@ -50,7 +50,7 @@ def main():
                 if SQUARESelected == (row, col):
                     SQUARESelected = ()
                     playerClicks = []
-                else:
+                else:  
                      SQUARESelected = (row,col)
                      playerClicks.append(SQUARESelected)
                 if len(playerClicks) == 2:
