@@ -43,22 +43,6 @@ def main():
         for e in p.event.get():
             if e.type == p.QUIT:
                 running = False
-            elif e.type == p.MOUSEBUTTONDOWN:
-                location = p.mouse.get_pos()
-                col = location[0]//SQUARE
-                row = location[1]//SQUARE
-                if SQUARESelected == (row, col):
-                    SQUARESelected = ()
-                    playerClicks = []
-                else:  
-                     SQUARESelected = (row,col)
-                     playerClicks.append(SQUARESelected)
-                if len(playerClicks) == 2:
-                    move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
-                    print(move.getChessNotation())
-                    gs.makeMove(move)
-                    SQUARESelected = ()
-                    playerClicks = []
                     
         draw_Game_State(screen, gs)
         clock.tick(MAX_FPS)
