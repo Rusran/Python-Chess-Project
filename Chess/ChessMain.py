@@ -36,6 +36,10 @@ def main():
     screen.fill(p.Color("White"))
     gs = ChessEngine.GameState()
     load_Images()
+    icon = p.image.load("img/icon.png")
+    p.display.set_icon(icon)
+    p.display.set_caption("Chessing")
+    
     running = True
     
     sqSelected = ()
