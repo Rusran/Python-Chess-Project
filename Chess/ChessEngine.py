@@ -1,3 +1,6 @@
+import numpy as np
+
+
 '''
 Storing all the information about the current state of chess game.
 Determining valid moves at current state.
@@ -12,8 +15,8 @@ class GameState():
         The second character represtents the type of the piece: 'R', 'N', 'B', 'Q', 'K' or 'p'.
         "--" represents an empty space with no piece.
         '''
-        self.board = [
-            ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
+        self.board = (
+            [["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
             ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
@@ -21,10 +24,11 @@ class GameState():
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["wp", "wp", "wp", "wp", "wp", "wp", "wp", "wp"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
+            )
         
         
         self.whiteToMove = True
-        self.moveLog = []
+        self.moveLog = ([])
         
         
     def makeMove(self, move):
