@@ -33,6 +33,47 @@ class GameState():
         self.moveLog.append(move)
         self.whiteToMove = not self.whiteToMove
 
+    def undoMove(self):
+        if len(self.moveLog) != 0:
+            move = self.moveLog.pop()
+            self.board[move.startRow][move.startCol] = move.pieceMoved
+            self.board[move.endRow][move.endCol] = move.pieceCaptured
+            self.whiteToMove = not self.whiteToMove
+
+    def getValidMoves(self):
+        return self.getAllPossibleMoves()
+
+
+    def getAllPossibleMoves(self):
+        moves = [Move((6,4),(4,4), self.board)]
+        for r in range(len(self.board)):
+            for c in range(len(self.board[r])):
+                turn = self.board[r][c][0]
+                if (turn == 'w' and self.whiteToMove) and (turn == 'b' and not self.whiteToMove):
+                    peice = self.board[r][c][1]
+                    if peice == 'p':
+                        self.getPawnMoves(r,c,moves)
+                    elif peice == 'R':
+                        self.getRookMoves(r,c,moves)
+        return moves
+
+    
+
+                
+    
+    
+    def getPawnMoves(self, r, c, moves):
+        pass
+    
+ 
+    def getRookMoves(self, r, c, moves):
+        pass
+    
+    
+    
+    
+    
+    
 class Move:
     def __init__(self, startSq , endSq, board):
         self.startRow = startSq[0]
@@ -41,6 +82,7 @@ class Move:
         self.endCol = endSq[1]
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
+        self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
         
     #maps keys to values
      
@@ -51,7 +93,11 @@ class Move:
                     "e": 4, "f": 5, "g": 6, "h": 7}
     cols_to_files = {v: k for k, v in files_to_cols.items()}
     
-    
+
+
+    def __eq__(self, other):
+        if isinstance(other, Move):
+            return self.moveID == other.moveID
         
     def getChessNotation(self):
         return self.getRankFile(self.startRow, self.startCol) + self.getRankFile(self.endRow, self.endCol)
