@@ -32,6 +32,7 @@ Main driver will handle user input and updating graphics
 def main():
     p.init()
     screen = p.display.set_mode((WIDTH,HEIGHT))
+    moveSound = p.mixer.Sound('sound/move-self.mp3')
     clock = p.time.Clock()
     screen.fill(p.Color("White"))
     gs = ChessEngine.GameState()
@@ -67,6 +68,7 @@ def main():
                     print(move.getChessNotation())
                     if move in validMoves:
                         gs.makeMove(move)
+                        moveSound.play()
                         moveMade = True
                     sqSelected = ()
                     playerClicks = []
