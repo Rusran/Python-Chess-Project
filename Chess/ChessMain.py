@@ -3,7 +3,9 @@ Main driver file.
 Handling user input.
 Displaying current GameStatus object.
 """
+
 import pygame as p
+import os
 import ChessEngine, ChessAI
 import sys
 from multiprocessing import Process, Queue
@@ -32,6 +34,7 @@ def main():
     The main driver for our code.
     This will handle user input and updating the graphics.
     """
+    os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
     p.init()
     screen = p.display.set_mode((BOARD_WIDTH + MOVE_LOG_PANEL_WIDTH, BOARD_HEIGHT))
     clock = p.time.Clock()
@@ -111,7 +114,7 @@ def main():
                     if ai_thinking:
                         move_finder_process.terminate()
                         ai_thinking = False
-                    move_undone = True
+                    move_undone = False
 
         # AI move finder
         if not game_over and not human_turn and not move_undone:
@@ -166,8 +169,8 @@ def main():
             valid_moves = game_state.getValidMoves()
             square_selected = ()
             player_clicks = []
-            move_made = False
-            animate = False
+            move_made = True
+            animate = True
             game_over = False
             drawEndGameText(screen, "Stalemate")
             white_win = 0.5
