@@ -6,6 +6,7 @@ Displaying current GameStatus object.
 
 import pygame as p
 import os
+import time
 import ChessEngine, ChessAI
 import sys
 from multiprocessing import Process, Queue
@@ -58,6 +59,8 @@ def main():
     move_log_font = p.font.SysFont("Arial", 14, False, False)
     white_win = 0.0
     black_win = 0.0
+    duration = 90
+    start_time = time.time()
     player_one = False  # if a human is playing white, then this will be True, else False
     player_two = False  # if a hyman is playing white, then this will be True, else False
 
@@ -164,21 +167,21 @@ def main():
             print("White Score:", white_win)
             print("Black Score:", black_win)
 
-        elif game_state.stalemate:
+        elif game_state.stalemate or duration <= time.time() - start_time :
             game_state = ChessEngine.GameState()
             valid_moves = game_state.getValidMoves()
             square_selected = ()
             player_clicks = []
             move_made = True
-            animate = True
+            animate = False
             game_over = False
             drawEndGameText(screen, "Stalemate")
-            white_win = 0.5
-            black_win = 0.5
+            white_win += 0.5
+            black_win += 0.5
             print("White Score:", white_win)
             print("Black Score:", black_win)
+            start_time = time.time()
         
-
         clock.tick(MAX_FPS)
         p.display.flip()
 
