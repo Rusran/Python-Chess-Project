@@ -53,7 +53,9 @@ def main():
     move_undone = False
     move_finder_process = None
     move_log_font = p.font.SysFont("Arial", 14, False, False)
-    player_one = True  # if a human is playing white, then this will be True, else False
+    white_win = 0.0
+    black_win = 0.0
+    player_one = False  # if a human is playing white, then this will be True, else False
     player_two = False  # if a hyman is playing white, then this will be True, else False
 
     while running:
@@ -143,15 +145,36 @@ def main():
             drawMoveLog(screen, game_state, move_log_font)
 
         if game_state.checkmate:
-            game_over = True
+            game_state = ChessEngine.GameState()
+            valid_moves = game_state.getValidMoves()
+            square_selected = ()
+            player_clicks = []
+            move_made = False
+            animate = False
+            game_over = False
             if game_state.white_to_move:
                 drawEndGameText(screen, "Black wins by checkmate")
+                black_win += 1.0
             else:
                 drawEndGameText(screen, "White wins by checkmate")
+                white_win += 1.0
+            print("White Score:", white_win)
+            print("Black Score:", black_win)
 
         elif game_state.stalemate:
-            game_over = True
+            game_state = ChessEngine.GameState()
+            valid_moves = game_state.getValidMoves()
+            square_selected = ()
+            player_clicks = []
+            move_made = False
+            animate = False
+            game_over = False
             drawEndGameText(screen, "Stalemate")
+            white_win = 0.5
+            black_win = 0.5
+            print("White Score:", white_win)
+            print("Black Score:", black_win)
+        
 
         clock.tick(MAX_FPS)
         p.display.flip()
@@ -196,10 +219,10 @@ def highlightSquares(screen, game_state, valid_moves, square_selected):
             # highlight selected square
             s = p.Surface((SQUARE_SIZE, SQUARE_SIZE))
             s.set_alpha(100)  # transparency value 0 -> transparent, 255 -> opaque
-            s.fill(p.Color('blue'))
+            s.fill(p.Color('yellow'))
             screen.blit(s, (col * SQUARE_SIZE, row * SQUARE_SIZE))
             # highlight moves from that square
-            s.fill(p.Color('yellow'))
+            s.fill(p.Color('green'))
             for move in valid_moves:
                 if move.start_row == row and move.start_col == col:
                     screen.blit(s, (move.end_col * SQUARE_SIZE, move.end_row * SQUARE_SIZE))
@@ -248,12 +271,12 @@ def drawMoveLog(screen, game_state, font):
 
 
 def drawEndGameText(screen, text):
-    font = p.font.SysFont("Helvetica", 32, True, False)
-    text_object = font.render(text, False, p.Color("gray"))
+    font = p.font.SysFont("comicsansms", 32, True, False)
+    text_object = font.render(text, False, p.Color("black"))
     text_location = p.Rect(0, 0, BOARD_WIDTH, BOARD_HEIGHT).move(BOARD_WIDTH / 2 - text_object.get_width() / 2,
                                                                  BOARD_HEIGHT / 2 - text_object.get_height() / 2)
     screen.blit(text_object, text_location)
-    text_object = font.render(text, False, p.Color('black'))
+    text_object = font.render(text, False, p.Color('red'))
     screen.blit(text_object, text_location.move(2, 2))
 
 
@@ -264,7 +287,7 @@ def animateMove(move, screen, board, clock):
     global colors
     d_row = move.end_row - move.start_row
     d_col = move.end_col - move.start_col
-    frames_per_square = 10  # frames to move one square
+    frames_per_square = 1  # frames to move one square
     frame_count = (abs(d_row) + abs(d_col)) * frames_per_square
     for frame in range(frame_count + 1):
         row, col = (move.start_row + d_row * frame / frame_count, move.start_col + d_col * frame / frame_count)
