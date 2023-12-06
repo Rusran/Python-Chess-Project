@@ -4,7 +4,7 @@ Handling the AI moves.
 import random
 import numpy as np
 
-piece_score = {"K": 0, "Q": 9, "R": 5, "B": 3.5, "N": 3, "p": 1}
+piece_score = {"K": 0, "Q": 9, "R": 5, "B": 4, "N": 3, "p": 1}
 
 knight_scores = np.array([[0.0, 0.1, 0.2, 0.2, 0.2, 0.2, 0.1, 0.0],
                  [0.1, 0.3, 0.5, 0.5, 0.5, 0.5, 0.3, 0.1],
@@ -75,7 +75,7 @@ piece_position_scores = {"wN": knight_scores,
 
 CHECKMATE = 1000
 STALEMATE = 0
-DEPTH = 2
+DEPTH = 3
 
 
 def evaluateBoard(game_state):

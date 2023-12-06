@@ -42,7 +42,9 @@ def main():
     icon = p.image.load("img/icon.png")
     p.display.set_icon(icon)
     p.display.set_caption("Chessing")
+    p.mixer.music.set_volume(0.5)
     moveSound = p.mixer.Sound('sound/move-self.mp3')
+    winSound = p.mixer.Sound('sound/boom.mp3')
     screen.fill(p.Color("white"))
     game_state = ChessEngine.GameState()
     valid_moves = game_state.getValidMoves()
@@ -61,8 +63,8 @@ def main():
     black_win = 0.0
     duration = 180
     start_time = time.time()
-    player_one = False  # if a human is playing white, then this will be True, else False
-    player_two = False   # if a human is playing black, then this will be True, else False
+    player_one = True  # if a human is playing white, then this will be True, else False
+    player_two = True   # if a human is playing black, then this will be True, else False
 
     while running:
         human_turn = (game_state.white_to_move and player_one) or (not game_state.white_to_move and player_two)
@@ -151,16 +153,13 @@ def main():
             drawMoveLog(screen, game_state, move_log_font)
 
         if game_state.checkmate:
-            game_state = ChessEngine.GameState()
-            valid_moves = game_state.getValidMoves()
-            square_selected = ()
-            player_clicks = []
-            move_made = False
-            animate = False
-            game_over = False
+            winSound.play()
+            game_over = True
             if game_state.white_to_move:
                 drawEndGameText(screen, "Black wins by checkmate")
+                
                 black_win += 1.0
+                drawEndGameText(screen, str(black_win))
             else:
                 drawEndGameText(screen, "White wins by checkmate")
                 white_win += 1.0
@@ -283,7 +282,7 @@ def drawEndGameText(screen, text):
     text_location = p.Rect(0, 0, BOARD_WIDTH, BOARD_HEIGHT).move(BOARD_WIDTH / 2 - text_object.get_width() / 2,
                                                                  BOARD_HEIGHT / 2 - text_object.get_height() / 2)
     screen.blit(text_object, text_location)
-    text_object = font.render(text, False, p.Color('red'))
+    text_object = font.render(text, False, p.Color('yellow'))
     screen.blit(text_object, text_location.move(2, 2))
 
 
@@ -294,7 +293,7 @@ def animateMove(move, screen, board, clock):
     global colors
     d_row = move.end_row - move.start_row
     d_col = move.end_col - move.start_col
-    frames_per_square = 1  # frames to move one square
+    frames_per_square = 10  # frames to move one square
     frame_count = (abs(d_row) + abs(d_col)) * frames_per_square
     for frame in range(frame_count + 1):
         row, col = (move.start_row + d_row * frame / frame_count, move.start_col + d_col * frame / frame_count)
