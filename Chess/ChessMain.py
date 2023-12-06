@@ -11,7 +11,7 @@ import ChessEngine, ChessAI
 import sys
 from multiprocessing import Process, Queue
 
-BOARD_WIDTH = BOARD_HEIGHT = 1024
+BOARD_WIDTH = BOARD_HEIGHT = 720
 MOVE_LOG_PANEL_WIDTH = 250
 MOVE_LOG_PANEL_HEIGHT = BOARD_HEIGHT
 DIMENSION = 8

@@ -4,7 +4,7 @@ Handling the AI moves.
 import random
 import numpy as np
 
-piece_score = {"K": 0, "Q": 9, "R": 5, "B": 3, "N": 3, "p": 1}
+piece_score = {"K": 0, "Q": 9, "R": 5, "B": 3.5, "N": 3, "p": 1}
 
 knight_scores = np.array([[0.0, 0.1, 0.2, 0.2, 0.2, 0.2, 0.1, 0.0],
                  [0.1, 0.3, 0.5, 0.5, 0.5, 0.5, 0.3, 0.1],
@@ -51,6 +51,15 @@ pawn_scores = np.array([[0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8],
                [0.25, 0.3, 0.3, 0.0, 0.0, 0.3, 0.3, 0.25],
                [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]])
 
+king_scores = np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+               [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+               [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+               [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+               [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+               [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+               [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+               [0.2, 0.2, 0.3, 0.0, 0.0, 0.2, 0.3, 0.2]])
+
 piece_position_scores = {"wN": knight_scores,
                          "bN": knight_scores[::-1],
                          "wB": bishop_scores,
@@ -60,7 +69,9 @@ piece_position_scores = {"wN": knight_scores,
                          "wR": rook_scores,
                          "bR": rook_scores[::-1],
                          "wp": pawn_scores,
-                         "bp": pawn_scores[::-1]}
+                         "bp": pawn_scores[::-1],
+                         "wK": king_scores,
+                         "bK": king_scores[::-1]}
 
 CHECKMATE = 1000
 STALEMATE = 0
@@ -92,22 +103,18 @@ def evaluateBoard(game_state):
                     score += piece_score[piece[1]] + piece_position_score
                 if piece[0] == "b":
                     score -= piece_score[piece[1]] + piece_position_score
-                    
 
     return score
 
 def quiescenceSearch(game_state, alpha, beta, maximizing_player, DEPTH):
-    """
-    Quiescence Search algorithm for positions that require deeper evaluation.
-    """
     stand_pat = evaluateBoard(game_state)
 
     if DEPTH == 0 or game_state.checkmate or game_state.stalemate:
         return stand_pat
 
     if maximizing_player:
-        max_eval = float('-inf')
-        for move in game_state.getValidMoves():  # Consider only quiet moves for LMR
+        max_eval = -CHECKMATE
+        for move in game_state.getValidMoves(): 
             game_state.makeMove(move)
             eval = -quiescenceSearch(game_state, -beta, -alpha, not maximizing_player, DEPTH - 1)
             game_state.undoMove()
@@ -120,14 +127,15 @@ def quiescenceSearch(game_state, alpha, beta, maximizing_player, DEPTH):
 
         return max_eval
     else:
-        min_eval = float('inf')
-        for move in game_state.getValidMoves():  # Consider only quiet moves for LMR
+        min_eval = CHECKMATE
+        for move in game_state.getValidMoves(): 
             game_state.makeMove(move)
-            eval = -quiescenceSearch(game_state, -beta, -alpha, not maximizing_player, DEPTH - 1)
+            eval = -quiescenceSearch(game_state, -beta, -alpha, not maximizing_player , DEPTH - 1)
             game_state.undoMove()
 
             min_eval = min(min_eval, eval)
             beta = min(beta, eval)
+
 
             if beta <= alpha:
                 break
@@ -137,11 +145,12 @@ def quiescenceSearch(game_state, alpha, beta, maximizing_player, DEPTH):
 def findBestMoveQuiescenceSearch(game_state, valid_moves, return_queue):
     global next_move
     next_move = None
+    maximizing_player = game_state.white_to_move
     random.shuffle(valid_moves)
-    best_score = float('-inf')
+    best_score = -CHECKMATE
     for move in valid_moves:
         game_state.makeMove(move)
-        score = -quiescenceSearch(game_state, float('-inf'), float('inf'), False, DEPTH)
+        score = -quiescenceSearch(game_state, -CHECKMATE, CHECKMATE, maximizing_player, DEPTH)
         game_state.undoMove()
         if score > best_score:
             best_score = score
