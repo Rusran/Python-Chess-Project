@@ -59,10 +59,10 @@ def main():
     move_log_font = p.font.SysFont("Arial", 14, False, False)
     white_win = 0.0
     black_win = 0.0
-    duration = 90
+    duration = 180
     start_time = time.time()
     player_one = False  # if a human is playing white, then this will be True, else False
-    player_two = False  # if a hyman is playing white, then this will be True, else False
+    player_two = False   # if a human is playing black, then this will be True, else False
 
     while running:
         human_turn = (game_state.white_to_move and player_one) or (not game_state.white_to_move and player_two)
@@ -94,7 +94,6 @@ def main():
                                 player_clicks = []
                         if not move_made:
                             player_clicks = [square_selected]
-
             # key handler
             elif e.type == p.KEYDOWN:
                 if e.key == p.K_z:  # undo when 'z' is pressed
@@ -124,13 +123,14 @@ def main():
             if not ai_thinking:
                 ai_thinking = True
                 return_queue = Queue()  # used to pass data between threads
-                move_finder_process = Process(target=ChessAI.findBestMove, args=(game_state, valid_moves, return_queue))
+                move_finder_process = Process(target=ChessAI.findBestMoveQuiescenceSearch, args=(game_state, valid_moves, return_queue))
                 move_finder_process.start()
 
             if not move_finder_process.is_alive():
                 ai_move = return_queue.get()
+                print(ai_move)
                 if ai_move is None:
-                    ai_move = ChessAI.findRandomMove(valid_moves)
+                    ai_move = ChessAI.findBestMoveQuiescenceSearch(game_state, valid_moves, return_queue)
                 game_state.makeMove(ai_move)
                 move_made = True
                 moveSound.play()
@@ -181,11 +181,12 @@ def main():
             print("White Score:", white_win)
             print("Black Score:", black_win)
             start_time = time.time()
+            
         
         clock.tick(MAX_FPS)
         p.display.flip()
 
-
+    
 def drawGameState(screen, game_state, valid_moves, square_selected):
     """
     Responsible for all the graphics within current game state.
