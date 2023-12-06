@@ -159,10 +159,25 @@ def main():
                 drawEndGameText(screen, "Black wins by checkmate")
                 
                 black_win += 1.0
-                drawEndGameText(screen, str(black_win))
+                drawEndGameScore(screen, str(black_win))
+                game_state = ChessEngine.GameState()
+                valid_moves = game_state.getValidMoves()
+                square_selected = ()
+                player_clicks = []
+                move_made = True
+                animate = False
+                game_over = True
             else:
                 drawEndGameText(screen, "White wins by checkmate")
+                drawEndGameScore(screen, str(white_win))
                 white_win += 1.0
+                game_state = ChessEngine.GameState()
+                valid_moves = game_state.getValidMoves()
+                square_selected = ()
+                player_clicks = []
+                move_made = True
+                animate = False
+                game_over = True
             print("White Score:", white_win)
             print("Black Score:", black_win)
 
@@ -173,7 +188,7 @@ def main():
             player_clicks = []
             move_made = True
             animate = False
-            game_over = False
+            game_over = True
             drawEndGameText(screen, "Stalemate")
             white_win += 0.5
             black_win += 0.5
@@ -285,6 +300,14 @@ def drawEndGameText(screen, text):
     text_object = font.render(text, False, p.Color('yellow'))
     screen.blit(text_object, text_location.move(2, 2))
 
+def drawEndGameScore(screen, text):
+    font = p.font.SysFont("comicsansms", 32, True, False)
+    text_object = font.render(text, False, p.Color("black"))
+    text_location = p.Rect(0, 50, BOARD_WIDTH, BOARD_HEIGHT).move(BOARD_WIDTH / 2 - text_object.get_width() / 2,
+                                                                 BOARD_HEIGHT / 2 - text_object.get_height() / 2)
+    screen.blit(text_object, text_location)
+    text_object = font.render(text, False, p.Color('yellow'))
+    screen.blit(text_object, text_location.move(2, 2))
 
 def animateMove(move, screen, board, clock):
     """
